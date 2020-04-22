@@ -4,13 +4,9 @@ This repository compares different alternatives to solve optimization problems i
 
 We solve a standard linear programming problem of the form
 
-.. math::
-   :nowrap:
-
-   \begin{align*}
-       &\min_{x \geq 0} c·x\\
-       & \text{s.t.}  A·x \leq b
-   \end{align*}
+min  c*x
+s.t. A*x <= b
+     x >= 0
 
 where x is a vector with all variables and c, A, b are matrices of appropiate dimension whose elements are randomly generated using normal probability distributions.
 
