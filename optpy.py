@@ -36,7 +36,6 @@ class lp:
     self.b = [round(random.gauss(0,1),2) for j in range(ncon)]
 
   def solve_scipy(self,method='interior-point'):
-
     """
     Solve the problem using the scipy package
 
@@ -60,7 +59,6 @@ class lp:
 
 
   def solve_pulp(self):
-
     """
     Solve the problem using the pulp package
 
@@ -88,7 +86,6 @@ class lp:
     return round(pu.value(m.objective),2),[round(x[i].varValue,2) for i in range(self.nvar)]
 
   def solve_pyomo(self,neos=True,solver='cplex'):
-
     """
     Solve the problem using the pyomo package
 
