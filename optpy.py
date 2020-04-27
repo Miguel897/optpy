@@ -6,6 +6,7 @@ import pulp as pu
 import random
 import pandas as pd
 import pyomo.environ as pe
+import pyomo.kernel as pk
 from scipy.optimize import linprog
 
 ######################### LINEAR PROGRAM  ########################
@@ -26,7 +27,7 @@ class lp:
     Parameters
     ----------
     nvar (int, default=10): number of variables
-    ncon (int, default=10): number of constraints
+    ncon (int, default=5): number of constraints
 
     """
     self.nvar = nvar
@@ -85,9 +86,9 @@ class lp:
     # Output
     return round(pu.value(m.objective),2),[round(x[i].varValue,2) for i in range(self.nvar)]
 
-  def solve_pyomo(self,neos=True,solver='cplex'):
+  def solve_pyomo_environ(self,neos=True,solver='cplex'):
     """
-    Solve the problem using the pyomo package
+    Solve the problem using the standard environ Pyomo package
 
     Parameters
     ----------
@@ -118,6 +119,47 @@ class lp:
     m.con = pe.Constraint(m.j,rule=con_rule)
     # Print problem
     m.pprint()
+    # Solve problem
+    if neos:
+      res = pe.SolverManagerFactory('neos').solve(m,opt=pe.SolverFactory(solver),symbolic_solver_labels=True,tee=True)
+    else:
+      res = pe.SolverFactory(solver).solve(m,symbolic_solver_labels=True,tee=True)
+    print(res['Solver'][0])
+    # Output
+    return round(m.obj(),2),[round(m.x[i].value,2) for i in m.i]
+
+  def solve_pyomo_kernel(self,neos=True,solver='cplex'):
+    """
+    Solve the problem using the kernel library of the Pyomo package.
+
+    Parameters
+    ----------
+    neos (boolean, default:True): if True the problem is solved in neos server. Otherwise, it uses local solvers
+    solver (str, default:'cplex'): defines the solver used to solve the optimization problem
+
+    Returns
+    -------
+    obj_fun (real): objective function
+    sol (list): optimal solution of variables
+
+    """
+    # Model
+    m = pk.block()
+    # Sets
+    m.i = range(self.nvar)
+    m.j = range(self.ncon)
+    # Variables
+    m.x = pk.variable_list()
+    for _ in m.i:
+      m.x.append(pk.variable(domain=pk.Reals, lb=0))
+    # Objective function
+    m.obj = pk.objective(pe.quicksum(self.c[i]*m.x[i] for i in m.i), sense=pk.minimize)
+    # Constraints
+    m.con = pk.constraint_list()
+    for j in m.j:
+      m.con.append(pk.constraint(body=pe.quicksum(self.A[j][i]*m.x[i] for i in m.i), lb=None, ub=self.b[j]))
+    # Print problem
+    # m.pprint()  # Not implemented yet in the kernel library
     # Solve problem
     if neos:
       res = pe.SolverManagerFactory('neos').solve(m,opt=pe.SolverFactory(solver),symbolic_solver_labels=True,tee=True)
