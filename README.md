@@ -67,7 +67,7 @@ cd optpy
   # Create linear programming probblem with 10 variables and 5 constraints. Further info: help(lp)
   lp1 = lp(nvar=10,ncon=5)
 
-  # Solve linear problem using pyomo. Further info: help(lp.solve_pyomo)
+  # Solve linear problem using pyomo. Further info: help(lp.solve_pyomo_environ)
   obj,x = lp1.solve_pyomo_environ(neos=True,solver='cplex')
 ```
 
@@ -75,7 +75,7 @@ cd optpy
 
  * Requirements: Pyomo and access to solvers
  * Pros: It solves all kind of optimization problems. Lighter and more flexible than Pyomo environ.
- * Cons: It needs access to solvers, although neos server can be also used. Less intuitive than Pyomo environ.
+ * Cons: Less intuitive than Pyomo environ. Connection to neos server under development
 
 ```python
   # Import lp class
@@ -84,8 +84,8 @@ cd optpy
   # Create linear programming probblem with 10 variables and 5 constraints. Further info: help(lp)
   lp1 = lp(nvar=10,ncon=5)
 
-  # Solve linear problem using pyomo. Further info: help(lp.solve_pyomo)
-  obj,x = lp1.solve_pyomo_kernel(neos=True,solver='cplex')
+  # Solve linear problem using pyomo. Further info: help(lp.solve_pyomo_kernel)
+  obj,x = lp1.solve_pyomo_kernel(solver='cplex')
 ```
 ## Do you want to contribute?
  

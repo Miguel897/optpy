@@ -121,20 +121,19 @@ class lp:
     m.pprint()
     # Solve problem
     if neos:
-      res = pe.SolverManagerFactory('neos').solve(m,opt=pe.SolverFactory(solver),symbolic_solver_labels=True,tee=True)
+      res = pe.SolverManagerFactory('neos').solve(m,opt=pe.SolverFactory(solver))
     else:
       res = pe.SolverFactory(solver).solve(m,symbolic_solver_labels=True,tee=True)
     print(res['Solver'][0])
     # Output
     return round(m.obj(),2),[round(m.x[i].value,2) for i in m.i]
 
-  def solve_pyomo_kernel(self,neos=True,solver='cplex'):
+  def solve_pyomo_kernel(self,solver='cplex'):
     """
     Solve the problem using the kernel library of the Pyomo package.
 
     Parameters
     ----------
-    neos (boolean, default:True): if True the problem is solved in neos server. Otherwise, it uses local solvers
     solver (str, default:'cplex'): defines the solver used to solve the optimization problem
 
     Returns
@@ -158,13 +157,8 @@ class lp:
     m.con = pk.constraint_list()
     for j in m.j:
       m.con.append(pk.constraint(body=pe.quicksum(self.A[j][i]*m.x[i] for i in m.i), lb=None, ub=self.b[j]))
-    # Print problem
-    # m.pprint()  # Not implemented yet in the kernel library
     # Solve problem
-    if neos:
-      res = pe.SolverManagerFactory('neos').solve(m,opt=pe.SolverFactory(solver),symbolic_solver_labels=True,tee=True)
-    else:
-      res = pe.SolverFactory(solver).solve(m,symbolic_solver_labels=True,tee=True)
+    res = pe.SolverFactory(solver).solve(m,symbolic_solver_labels=True,tee=True)
     print(res['Solver'][0])
     # Output
     return round(m.obj(),2),[round(m.x[i].value,2) for i in m.i]
