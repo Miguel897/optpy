@@ -40,7 +40,7 @@ cd optpy
 ## Method 2: PULP [(link)](https://pypi.org/project/PuLP/)
 
  * Requirements: pulp, glpk, cbc
- * Pros: It relies on open-source solvers. Linear and integer problems can be solved. Intuitive sintax.
+ * Pros: It relies on open-source solvers. Linear and integer problems can be solved. Intuitive syntax.
  * Cons: It does not solve non-linear problems.
 
 ```python
@@ -54,10 +54,10 @@ cd optpy
   obj,x = lp1.solve_pulp()
 ```
 
-## Method 3: PYOMO [(link)](http://www.pyomo.org/)
+## Method 3: PYOMO Environ (standard) [(link)](http://www.pyomo.org/)
 
- * Requirements: pyomo and access to solvers
- * Pros: It solves all kind of optimization problems. Intuitive sintax.
+ * Requirements: Pyomo and access to solvers
+ * Pros: It solves all kind of optimization problems. Intuitive syntax.
  * Cons: It needs access to solvers, although neos server can be also used.
 
 ```python
@@ -67,15 +67,34 @@ cd optpy
   # Create linear programming probblem with 10 variables and 5 constraints. Further info: help(lp)
   lp1 = lp(nvar=10,ncon=5)
 
-  # Solve linear problem using pyomo. Further info: help(lp.solve_pyomo)
-  obj,x = lp1.solve_pyomo(neos=True,solver='cplex')
+  # Solve linear problem using pyomo. Further info: help(lp.solve_pyomo_environ)
+  obj,x = lp1.solve_pyomo_environ(neos=True,solver='cplex')
 ```
 
+## Method 4: PYOMO Kernel Library [(link)](https://pyomo.readthedocs.io/en/stable/library_reference/kernel/index.html)
+
+ * Requirements: Pyomo and access to solvers
+ * Pros: It solves all kind of optimization problems. Lighter and more flexible than Pyomo environ.
+ * Cons: Less intuitive than Pyomo environ. Connection to neos server under development
+
+```python
+  # Import lp class
+  from optpy import lp
+
+  # Create linear programming probblem with 10 variables and 5 constraints. Further info: help(lp)
+  lp1 = lp(nvar=10,ncon=5)
+
+  # Solve linear problem using pyomo. Further info: help(lp.solve_pyomo_kernel)
+  obj,x = lp1.solve_pyomo_kernel(solver='cplex')
+```
 ## Do you want to contribute?
  
  Any feedback is welcome so feel free to ask or comment anything you want via a Pull Request in this repo. If you need extra help, you can ask Salvador Pineda (spinedamorente@gmail.com).
  
-
 ## Developed by 
 
  * [Salvador Pineda](https://www.researchgate.net/profile/Salvador_Pineda) - spinedamorente@gmail.com
+
+## Contributed by
+
+ * [Miguel Angel Muñoz Diaz](https://www.researchgate.net/profile/Miguel_Munoz_Diaz) - miguelangeljmd@uma.es
